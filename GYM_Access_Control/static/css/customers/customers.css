@@ -1,0 +1,161 @@
+.cool-table {
+        background: #fff;
+        border-radius: 14px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+
+    .cool-table thead {
+        background: #ffe7d3; /* soft orange */
+        color: #c34700;
+        font-weight: 600;
+        border: none;
+    }
+
+    .cool-table thead th {
+        padding: 16px 12px;
+        font-size: 14px;
+        letter-spacing: 0.4px;
+        border: none;
+    }
+
+    .cool-table tbody tr {
+        border-bottom: 1px solid #f0f0f0;
+        transition: 0.2s ease;
+    }
+
+    .cool-table tbody tr:hover {
+        background: #fff8f2;
+    }
+
+    .cool-table td {
+        padding: 14px 12px;
+        vertical-align: middle;
+        border: none;
+        font-size: 15px;
+    }
+
+    /* Status Badges */
+    .badge-active {
+        background: #ff9f45;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .badge-waiting {
+        background: #ffe0c2;
+        color: #9b4f00;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* Icon buttons */
+    .btn-orange-soft {
+        background: #fff0e6;
+        border-radius: 10px;
+        padding: 8px 12px;
+        border: none;
+        color: #d45a00;
+        transition: .2s;
+    }
+
+    .btn-orange-soft:hover {
+        background: #ffdfc7;
+    }
+
+    /* Delete button */
+    .btn-danger {
+        background: #ff5f57 !important;
+        border: none;
+        transition: .2s;
+    }
+
+    .btn-danger:hover {
+        background: #e94740 !important;
+    }
+
+
+     .modern-modal .modal-content {
+        border-radius: 18px;
+        border: none;
+        padding: 5px 0;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+        overflow: hidden;
+    }
+
+    /* HEADER */
+    .modern-modal .modal-header {
+        background: linear-gradient(90deg, #ffcf99, #ffb473);
+        color: #6b3600;
+        padding: 16px 20px;
+        border-bottom: none;
+    }
+
+    .modern-modal .modal-title {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .modern-modal .close span {
+        color: #6b3600;
+        font-size: 26px;
+        transition: 0.2s;
+    }
+
+    .modern-modal .close span:hover {
+        color: #3d1b00;
+    }
+
+    /* BODY */
+    .modern-modal .modal-body {
+        padding: 20px 22px;
+    }
+
+    .modern-modal label {
+        font-weight: 600;
+        color: #783400;
+    }
+
+    /* INPUTS */
+    .modern-modal .form-control,
+    .modern-modal .form-control-file,
+    .modern-modal select {
+        border-radius: 10px;
+        border: 1px solid #ffcf99;
+        padding: 10px 12px;
+        transition: 0.2s;
+        outline: none !important;
+    }
+
+    .modern-modal .form-control:focus,
+    .modern-modal select:focus {
+        border-color: #ff9f45;
+        box-shadow: 0 0 0 0.15rem rgba(255, 159, 69, 0.3);
+    }
+
+    /* FOOTER */
+    .modern-modal .modal-footer {
+        border-top: none;
+        padding: 15px 20px;
+        background: #fff8f2;
+    }
+
+    /* SUBMIT BUTTON */
+    .modern-modal .btn-success {
+        background: #ff9f45;
+        border: none;
+        font-weight: 600;
+        padding: 10px 18px;
+        border-radius: 10px;
+        transition: 0.2s;
+    }
+
+    .modern-modal .btn-success:hover {
+        background: #ff7f19;
+    }

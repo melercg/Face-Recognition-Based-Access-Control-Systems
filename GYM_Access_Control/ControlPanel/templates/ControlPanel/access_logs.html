@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block heading %}
+<title>Access Logs</title>
+{% endblock %}
+
+{% block customization %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="{% static 'css/customers/customers.css' %}">
+<style>
+    table {
+        margin: 0 auto;
+    }
+
+    thead th {
+        text-align: center;
+    }
+
+    tbody td {
+        text-align: center;
+    }
+
+    .filter-section {
+        background: #fff;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+
+    .filter-section .form-control {
+        border-radius: 10px;
+        border: 1px solid #ffcf99;
+        padding: 10px 12px;
+    }
+
+    .filter-section .form-control:focus {
+        border-color: #ff9f45;
+        box-shadow: 0 0 0 0.15rem rgba(255, 159, 69, 0.3);
+    }
+
+    .filter-section label {
+        font-weight: 600;
+        color: #783400;
+        margin-bottom: 5px;
+    }
+
+    .btn-filter {
+        background: #ff9f45;
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 10px;
+        transition: 0.2s;
+    }
+
+    .btn-filter:hover {
+        background: #ff7f19;
+        color: white;
+    }
+
+    .btn-reset {
+        background: #fff0e6;
+        border: none;
+        color: #d45a00;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 10px;
+        transition: 0.2s;
+    }
+
+    .btn-reset:hover {
+        background: #ffdfc7;
+        color: #d45a00;
+    }
+
+    .confidence-badge {
+        background: #4CAF50;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .confidence-badge.medium {
+        background: #ff9f45;
+    }
+
+    .confidence-badge.low {
+        background: #ff5f57;
+    }
+
+    .customer-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff9f45, #ff7f19);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+        margin-right: 8px;
+    }
+
+    .customer-name-cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .results-info {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination .page-link {
+        color: #ff9f45;
+        border-color: #ffcf99;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #ff9f45;
+        border-color: #ff9f45;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #fff0e6;
+        color: #d45a00;
+    }
+</style>
+{% endblock %}
+
+{% block page_source %}
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-4">
+                <h2 class="heading-section">Access Logs</h2>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <form method="GET" action="">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label for="customer">Customer</label>
+                        <input type="text" class="form-control" id="customer" name="customer"
+                               placeholder="Search by name..." value="{{ request.GET.customer }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="date_from">Date From</label>
+                        <input type="date" class="form-control" id="date_from" name="date_from"
+                               value="{{ request.GET.date_from }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="date_to">Date To</label>
+                        <input type="date" class="form-control" id="date_to" name="date_to"
+                               value="{{ request.GET.date_to }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="min_confidence">Min Confidence</label>
+                        <select class="form-control" id="min_confidence" name="min_confidence">
+                            <option value="">All</option>
+                            <option value="0.9" {% if request.GET.min_confidence == "0.9" %}selected{% endif %}>90%+</option>
+                            <option value="0.8" {% if request.GET.min_confidence == "0.8" %}selected{% endif %}>80%+</option>
+                            <option value="0.7" {% if request.GET.min_confidence == "0.7" %}selected{% endif %}>70%+</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-filter me-2">
+                            <i class="fa-solid fa-filter"></i> Filter
+                        </button>
+                        <a href="{% url 'access-logs' %}" class="btn btn-reset">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Info -->
+        <div class="results-info">
+            Showing {{ logs.count }} record{% if logs.count != 1 %}s{% endif %}
+        </div>
+
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table cool-table table-responsive-xl">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Entry Time</th>
+                                <th>Confidence</th>
+                                <th>Camera Location</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr>
+                                <td>
+                                    <div class="customer-name-cell">
+                                        <span class="customer-avatar">
+                                            {{ log.customer.full_name|first|upper }}
+                                        </span>
+                                        {{ log.customer.full_name }}
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ log.entry_time|date:"d.m.Y H:i:s" }}
+                                </td>
+                                <td>
+                                    {% widthratio log.confidence_score 1 100 as conf_percent %}
+                                    {% if log.confidence_score >= 0.9 %}
+                                        <span class="confidence-badge">%{{ conf_percent }}</span>
+                                    {% elif log.confidence_score >= 0.8 %}
+                                        <span class="confidence-badge medium">%{{ conf_percent }}</span>
+                                    {% else %}
+                                        <span class="confidence-badge low">%{{ conf_percent }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if log.camera_location %}
+                                        {{ log.camera_location }}
+                                    {% else %}
+                                        <span style="color: #999;">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5" style="color: #999;">
+                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
+                                    No access logs found
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

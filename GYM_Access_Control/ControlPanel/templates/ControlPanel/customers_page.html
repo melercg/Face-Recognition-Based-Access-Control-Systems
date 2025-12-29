@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block heading %}
+<title>Customers</title>
+
+{% endblock %}
+
+{% block customization %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/customers/customers.css' %}">
+<style>
+	table {
+		margin: 0 auto;
+	}
+
+	thead th {
+		text-align: center;
+	}
+
+	tbody td {
+		text-align: center;
+	}
+</style>
+{% endblock %}
+
+{% block page_source %}
+
+<section class="ftco-section">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-md-6 text-center mb-5">
+				<h2 class="heading-section">Customers</h2>
+			</div>
+		</div>
+		<div class="row mb-2">
+			<div class="col-12 d-flex justify-content-end">
+				<button type="button" class="btn btn-primary register-modal" data-target="#addCustomerModal">
+					<i class="fa fa-plus"></i> New Customer
+				</button>
+
+			</div>
+
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="table-wrap">
+					<table class="table cool-table table-responsive-xl">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Phone Number</th>
+								<th>Full Name</th>
+								<th>Status</th>
+								<th>Type</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for customer in customers %}
+							<tr id="customer-{{customer.id}}">
+								<td class="w-auto text-nowrap">
+									<button type="button" class="btn btn-orange-soft open-modal"
+										data-fullname="{{ customer.full_name }}"
+										data-phone="{{ customer.phone_number }}"
+										data-type="{{ customer.customer_type }}"
+										data-status="{% if customer.is_active %}Active{% else %}Waiting{% endif %}"
+										data-images='[
+                        {% for image in customer.face_data.all %}
+                            "{{ image.image.url }}"{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    ]' data-toggle="modal" data-target="#customerModal">
+										<i class="fa-solid fa-gear"></i>
+									</button>
+								</td>
+
+								<td>
+									<div class="pl-3 email">
+										<span>{{ customer.phone_number }}</span><br>
+										<small style="color:#999">{{ customer.created_at }}</small>
+									</div>
+								</td>
+
+								<td>{{ customer.full_name }}</td>
+
+								<td>
+									{% if customer.is_active %}
+									<span class="badge-active">Active</span>
+									{% else %}
+									<span class="badge-waiting">Waiting</span>
+									{% endif %}
+								</td>
+
+								<td>
+									{% if customer.customer_type %}
+									<span class="badge-active">{{ customer.customer_type }}</span>
+									{% endif %}
+								</td>
+
+								<td>
+									<button class="btn btn-sm btn-danger" onclick="deleteCustomer({{ customer.id }})">
+										<i class="fa-solid fa-trash"></i>
+									</button>
+								</td>
+
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="customerModalLabel">Customer Info</h5>
+
+			</div>
+			<div class="modal-body">
+				<p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
+				<p><strong>Phone Number:</strong> <span id="modalPhoneNumber"></span></p>
+				<p><strong>Customer Type:</strong> <span id="modalCustomerType"></span></p>
+				<p><strong>Status:</strong> <span id="modalStatus"></span></p>
+				<p><strong>Images:</strong></p>
+				<div id="modalImages" class="d-flex flex-wrap gap-2 mt-2"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <form method="POST" action="{% url 'Customers' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="modal-content modern-modal">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" class="form-control" name="full_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="text" class="form-control" name="phone_number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customer_type">Customer Type</label>
+                        <select name="customer_type" class="form-control" required>
+                            {% for customer_type in customer_types %}
+                                <option value="{{ customer_type.id }}">{{ customer_type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="images">Upload Face Images (3–7 images)</label>
+                        <input type="file" class="form-control-file" name="images" accept="image/*" multiple required>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Add Customer</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script src="{% static 'js/customers_page/main.js' %}"></script>
+
+{% endblock %}
