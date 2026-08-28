@@ -1,0 +1,5 @@
+# Ucuncu taraf onyuz paketleri (Bootstrap, Font Awesome, select2, animsition...).
+# linguist-vendored: GitHub bunlari dil istatistiginden haric tutar,
+# boylece repo gercek diliyle (Python) etiketlenir.
+GYM_Access_Control/static/vendor/** linguist-vendored
+GYM_Access_Control/static/fonts/**  linguist-vendored
